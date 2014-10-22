@@ -14,9 +14,15 @@ class Page(object):
     def __init__(self, driver):
         self.driver = driver
 
+
     def open(self):
         url = urlparse.urljoin(self.BASE_URL, self.PATH)
         self.driver.get(url)
+        print "opened"
+        WebDriverWait(driver, 1, 3).until(
+           lambda d: True
+        )
+        print "waited"
 
 
 class AuthPage(Page):

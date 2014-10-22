@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 
-<<<<<<< HEAD
 import sys
 import unittest
 from tests.example_test import ExampleTest
