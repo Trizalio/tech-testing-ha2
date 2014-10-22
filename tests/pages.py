@@ -3,6 +3,8 @@ import urlparse
 #from tests.components import AuthForm, TopMenu, Slider, TimeSelector, BaseCampaignSettings, AdsForm, Gender
 from tests.components import AuthForm, TopMenu, BaseAdStats, FormBlock, WhomBlock, BannerPreview, FooterBlock, WhenBlock, CompaignsList, waitAndFind2
 from tests.const import Vars
+from time import sleep
+
 
 #from selenium.webdriver.support.wait import WebDriverWait
 
@@ -18,11 +20,7 @@ class Page(object):
     def open(self):
         url = urlparse.urljoin(self.BASE_URL, self.PATH)
         self.driver.get(url)
-        print "opened"
-        WebDriverWait(driver, 1, 3).until(
-           lambda d: True
-        )
-        print "waited"
+        sleep(2)
 
 
 class AuthPage(Page):

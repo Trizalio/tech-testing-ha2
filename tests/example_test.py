@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from tests.components import AuthForm, TopMenu
 from tests.pages import Page, AuthPage, CreatePage, CampaignsPage
 from tests.const import Vars
+from time import sleep
 
 class ExampleTest(unittest.TestCase):
     def setUp(self):
@@ -78,7 +79,7 @@ class ExampleTest(unittest.TestCase):
         #result =  WebDriverWait(self.driver, 10, 0.5).until(
         #    lambda d: create_page.formBlock.imagePreview.getImageUrl() is not None
         #)
-        create_page.formBlock.image.waitForPicture()
+        sleep(2)
 
         create_page.formBlock.submit.click()
         
@@ -114,10 +115,10 @@ class ExampleTest(unittest.TestCase):
         create_page.formBlock.link.setText(Vars.MainStats.LINK)
         create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
 
-        create_page.formBlock.image.waitForPicture()
+        sleep(2)
         create_page.formBlock.submit.click()
 
-        create_page.bannerPreview.image.waitForPicture()
+        sleep(2)
         create_page.footerBlock.submit.click()
 
         compaign_page = CampaignsPage(self.driver)

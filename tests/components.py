@@ -27,11 +27,11 @@ def waitAndFindbyClass(driver, targetName):
 
 
 def waitAndFind2(driver, targetName):
-    result =  WebDriverWait(driver, 30, 0.1).until(
-       lambda d: d.find_elements_by_css_selector(targetName)
-    )
-    for target in result:
-       print target
+    # result =  WebDriverWait(driver, 30, 0.1).until(
+    #    lambda d: d.find_elements_by_css_selector(targetName)
+    # )
+    # for target in result:
+    #    print target
 
     result =  WebDriverWait(driver, 6, 0.5).until(
         lambda d: d.find_element_by_css_selector(targetName)
