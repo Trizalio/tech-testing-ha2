@@ -187,7 +187,6 @@ class Income(Element):
     @property
     def lock(self):
         if not hasattr(self, '__lockInitDone'):
-            print "lock"
             setattr(self, '__lock', Groupbox(waitAndFind2(self.element, self.LOCK)))
             setattr(self, '__lockInitDone', True)
         return getattr(self, '__lock')

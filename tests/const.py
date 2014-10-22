@@ -16,7 +16,7 @@ class Vars:
         TITLE = 'Title'
         TEXT = 'Text'
         LINK = 'http://my.mail.ru/apps/indikot'
-        IMAGE = '/home/trizalio/tests/dz2Duplicate/img.jpg'
+        IMAGE = os.path.abspath("img.jpg")
 
     class Time:
         WORK_TIME = u'Рабочее время'
