@@ -1,88 +1,16 @@
+# -*- coding: UTF-8 -*-
 import os
 
 import unittest
 import urlparse
+import random
 
 from selenium.webdriver import ActionChains, DesiredCapabilities, Remote
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
-
-class Page(object):
-    BASE_URL = 'https://target.mail.ru'
-    PATH = ''
-
-    def __init__(self, driver):
-        self.driver = driver
-
-    def open(self):
-        url = urlparse.urljoin(self.BASE_URL, self.PATH)
-        self.driver.get(url)
-
-
-class AuthPage(Page):
-    PATH = '/login'
-
-    @property
-    def form(self):
-        return AuthForm(self.driver)
-
-
-class CreatePage(Page):
-    PATH = '/ads/create'
-
-    @property
-    def top_menu(self):
-        return TopMenu(self.driver)
-
-    @property
-    def slider(self):
-        return Slider(self.driver)
-
-
-class Component(object):
-    def __init__(self, driver):
-        self.driver = driver
-
-
-class AuthForm(Component):
-    LOGIN = '#id_Login'
-    PASSWORD = '#id_Password'
-    DOMAIN = '#id_Domain'
-    SUBMIT = '#gogogo>input'
-
-    def set_login(self, login):
-        self.driver.find_element_by_css_selector(self.LOGIN).send_keys(login)
-
-    def set_password(self, pwd):
-        self.driver.find_element_by_css_selector(self.PASSWORD).send_keys(pwd)
-
-    def set_domain(self, domain):
-        select = self.driver.find_element_by_css_selector(self.DOMAIN)
-        Select(select).select_by_visible_text(domain)
-
-    def submit(self):
-        self.driver.find_element_by_css_selector(self.SUBMIT).click()
-
-
-class TopMenu(Component):
-    EMAIL = '#PH_user-email'
-
-    def get_email(self):
-        return WebDriverWait(self.driver, 30, 0.1).until(
-            lambda d: d.find_element_by_css_selector(self.EMAIL).text
-        )
-
-
-class Slider(Component):
-    SLIDER = '.price-slider__begunok'
-
-    def move(self, offset):
-        element = WebDriverWait(self.driver, 30, 0.1).until(
-            lambda d: d.find_element_by_css_selector(self.SLIDER)
-        )
-        ac = ActionChains(self.driver)
-        ac.click_and_hold(element).move_by_offset(offset, 0).perform()
-
+from tests.components import AuthForm, TopMenu
+from tests.pages import Page, AuthPage, CreatePage, CampaignsPage
+from tests.const import Vars
 
 class ExampleTest(unittest.TestCase):
     def setUp(self):
@@ -92,35 +20,110 @@ class ExampleTest(unittest.TestCase):
             command_executor='http://127.0.0.1:4444/wd/hub',
             desired_capabilities=getattr(DesiredCapabilities, browser).copy()
         )
-
-    def tearDown(self):
-        self.driver.quit()
-
-    def test(self):
-        USERNAME = 'tech-testing-ha2-0@bk.ru'
-        PASSWORD = os.environ['TTHA2PASSWORD']
-        DOMAIN = '@bk.ru'
+        self.driver.maximize_window()
 
         auth_page = AuthPage(self.driver)
         auth_page.open()
+        auth_page.login()
+        pass
 
-        auth_form = auth_page.form
-        auth_form.set_domain(DOMAIN)
-        auth_form.set_login(USERNAME)
-        auth_form.set_password(PASSWORD)
-        auth_form.submit()
+    def tearDown(self):
+        self.driver.quit()
+        pass
 
+    ##done
+    def testLogin(self):
         create_page = CreatePage(self.driver)
         create_page.open()
-        email = create_page.top_menu.get_email()
 
-        self.assertEqual(USERNAME, email)
+        email = create_page.top_menu.getEmail()
+        self.assertEqual(Vars.Login.USERNAME, email)
+        pass
 
-        # ## And some examples
-        # create_page.slider.move(100)
-        # FILE_PATH = '/Users/bayandin/repos/tech-testing-selenium-demo/img.jpg'
-        # element = WebDriverWait(self.driver, 30, 0.1).until(
-        #     lambda d: d.find_element_by_css_selector('.banner-form__img-file')
-        # )
-        #
-        # element.send_keys(FILE_PATH)
+    ##done
+    def testIncome(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
+
+        create_page.whomBlock.income.lock.open()
+        create_page.whomBlock.income.low.setChecked()
+        create_page.whomBlock.income.medium.setChecked()
+        create_page.whomBlock.income.medium.setUnchecked()
+        create_page.whomBlock.income.high.setChecked()
+        create_page.whomBlock.income.lock.close()
+        create_page.whomBlock.income.lock.open()
+        self.assertEqual(True, create_page.whomBlock.income.low.getChecked())
+        self.assertEqual(False, create_page.whomBlock.income.medium.getChecked())
+        self.assertEqual(True, create_page.whomBlock.income.high.getChecked())
+        pass
+
+
+    ##don
+    def testCreateBanner(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
+
+
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
+
+
+        create_page.formBlock.title.setText(Vars.MainStats.TITLE)
+        create_page.formBlock.text.setText(Vars.MainStats.TEXT)
+        create_page.formBlock.link.setText(Vars.MainStats.LINK)
+        create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
+
+        #result =  WebDriverWait(self.driver, 10, 0.5).until(
+        #    lambda d: create_page.formBlock.imagePreview.getImageUrl() is not None
+        #)
+        create_page.formBlock.image.waitForPicture()
+
+        create_page.formBlock.submit.click()
+        
+        self.assertEqual(Vars.MainStats.TITLE, create_page.bannerPreview.title.getText())
+        self.assertEqual(Vars.MainStats.TEXT, create_page.bannerPreview.text.getText())
+        self.assertIsNotNone(create_page.bannerPreview.image.getImageUrl())
+        pass
+
+    ##done
+    def testWhenTime(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
+
+        create_page.whenBlock.timeBlock.lock.open()
+        create_page.whenBlock.timeBlock.workTime.click()
+        self.assertEqual(Vars.Time.WORK_TIME, create_page.whenBlock.timeBlock.text.getText())
+        create_page.whenBlock.timeBlock.monday0.open()
+        self.assertEqual(Vars.Time.HOURS_56, create_page.whenBlock.timeBlock.text.getText())
+        pass
+
+    ##done
+    def testCreateCompany(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
+
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
+
+        create_page.formBlock.title.setText(Vars.MainStats.TITLE)
+        create_page.formBlock.text.setText(Vars.MainStats.TEXT)
+        create_page.formBlock.link.setText(Vars.MainStats.LINK)
+        create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
+
+        create_page.formBlock.image.waitForPicture()
+        create_page.formBlock.submit.click()
+
+        create_page.bannerPreview.image.waitForPicture()
+        create_page.footerBlock.submit.click()
+
+        compaign_page = CampaignsPage(self.driver)
+        compaign_page.open()
+
+        self.assertEqual(Vars.BaseStats.NAME, compaign_page.compaignsList.compaign.compaignName.getText())
+        self.assertEqual(Vars.MainStats.TEXT, compaign_page.compaignsList.compaign.text.getText())
+        self.assertEqual(Vars.MainStats.TITLE, compaign_page.compaignsList.compaign.title.getText())
+        self.assertIsNotNone(compaign_page.compaignsList.compaign.image.getImageUrl())
