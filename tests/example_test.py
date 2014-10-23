@@ -13,6 +13,8 @@ from tests.pages import Page, AuthPage, CreatePage, CampaignsPage
 from tests.const import Vars
 from time import sleep
 
+
+
 class ExampleTest(unittest.TestCase):
     def setUp(self):
         browser = os.environ.get('TTHA2BROWSER', 'CHROME')
@@ -46,6 +48,11 @@ class ExampleTest(unittest.TestCase):
         create_page = CreatePage(self.driver)
         create_page.open()
 
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
+
         create_page.whomBlock.income.lock.open()
         create_page.whomBlock.income.low.setChecked()
         create_page.whomBlock.income.medium.setChecked()
@@ -59,7 +66,7 @@ class ExampleTest(unittest.TestCase):
         pass
 
 
-    ##don
+    ##done
     def testCreateBanner(self):
         create_page = CreatePage(self.driver)
         create_page.open()
@@ -70,16 +77,14 @@ class ExampleTest(unittest.TestCase):
         baseStats.companyTarget.setTargetMyWorld()
         baseStats.setCompanyName(Vars.BaseStats.NAME)
 
-
         create_page.formBlock.title.setText(Vars.MainStats.TITLE)
         create_page.formBlock.text.setText(Vars.MainStats.TEXT)
         create_page.formBlock.link.setText(Vars.MainStats.LINK)
         create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
 
-        #result =  WebDriverWait(self.driver, 10, 0.5).until(
-        #    lambda d: create_page.formBlock.imagePreview.getImageUrl() is not None
-        #)
-        sleep(2)
+        while create_page.formBlock.image.getImageUrl() is None:
+            sleep(0.2)
+            create_page.formBlock.invalidate(create_page.formBlock, "image")
 
         create_page.formBlock.submit.click()
         
@@ -92,6 +97,11 @@ class ExampleTest(unittest.TestCase):
     def testWhenTime(self):
         create_page = CreatePage(self.driver)
         create_page.open()
+
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
 
         create_page.whenBlock.timeBlock.lock.open()
         create_page.whenBlock.timeBlock.workTime.click()

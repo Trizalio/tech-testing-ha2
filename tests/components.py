@@ -11,6 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.select import Select
 from tests.atoms import Element, ImageGrabber, Image, Button, Text, Textbox, Radiobutton, Groupbox, Checkbox
 
+DEBUG = True
+
 class Component(object):
     def __init__(self, driver):
         self.driver = driver
@@ -27,11 +29,11 @@ class Component(object):
 
 
 def waitAndFind2(driver, targetName):
-    # result =  WebDriverWait(driver, 30, 0.1).until(
-    #    lambda d: d.find_elements_by_css_selector(targetName)
-    # )
-    # for target in result:
-    #    print target
+    debug ("looking for " + targetName)
+    result =  WebDriverWait(driver, 30, 0.1).until(
+       lambda d: d.find_elements_by_css_selector(targetName)
+    )
+    debug ("found " + str(len(result)))
 
     result =  WebDriverWait(driver, 10, 0.5).until(
         lambda d: d.find_element_by_css_selector(targetName)
@@ -52,6 +54,39 @@ def waitAndFindAndFillTextField(driver, targetName, text):
     result.clear()
     result.send_keys(text)
     pass
+
+def createOnFirstAccess(self, name, constructor, selector, searchMetod = waitAndFind2):
+    debug ("createOnFirstAccess " + name)
+    initName = '__' + name + 'InitDone'
+    objectName = '__' + name
+    invalidateName = 'invalidate'
+    checkName = 'check'
+    if not hasattr(self, initName) or getattr(self, initName) == False:
+        debug ("create " + name)
+        setattr(self, objectName, constructor(searchMetod(self.element, selector)))
+        setattr(self, initName, True)
+    if not hasattr(self, invalidateName):
+        debug ("set invalidate ")
+        setattr(self, invalidateName, invalidateFunction)
+    return getattr(self, objectName)
+
+def invalidateFunction(parent, name):
+    debug ("invalidateFunction " + name)
+    initName = '__' + name + 'InitDone'
+    if hasattr(parent, initName):
+        if getattr(parent, initName) == True:
+            debug ("invalidate " + name)
+            setattr(parent, initName, False)
+        else:
+            debug ("already invalidated " + name)
+    else:
+        debug ("no attribute " + name)
+    pass
+
+def debug(text):
+    if DEBUG:
+        print text
+
 
 # def waitAndFindAndGetChecked(driver, targetName):
 #     result = waitAndFind(driver, targetName)
@@ -127,6 +162,8 @@ class BaseAdStats(Component):
 
 
 
+
+
 class FormBlock(Element):
     TITLE = 'input[data-name="title"]'
     TEXT = 'textarea[data-name="text"]'
@@ -138,45 +175,51 @@ class FormBlock(Element):
 
     @property
     def title(self):
-        if not hasattr(self, '__titleDone'):
-            setattr(self, '__title', Textbox(waitAndFind2(self.element, self.TITLE)))
-            setattr(self, '__titleInitDone', True)
-        return getattr(self, '__title')
+        return createOnFirstAccess(self, "title", Textbox, self.TITLE)
+        # if not hasattr(self, '__titleDone'):
+        #     setattr(self, '__title', Textbox(waitAndFind2(self.element, self.TITLE)))
+        #     setattr(self, '__titleInitDone', True)
+        # return getattr(self, '__title')
 
     @property
     def text(self):
-        if not hasattr(self, '__textDone'):
-            setattr(self, '__text', Textbox(waitAndFind2(self.element, self.TEXT)))
-            setattr(self, '__textInitDone', True)
-        return getattr(self, '__text')
+        return createOnFirstAccess(self, "text", Textbox, self.TEXT)
+        # if not hasattr(self, '__textDone'):
+        #     setattr(self, '__text', Textbox(waitAndFind2(self.element, self.TEXT)))
+        #     setattr(self, '__textInitDone', True)
+        # return getattr(self, '__text')
 
     @property
     def link(self):
-        if not hasattr(self, '__linkDone'):
-            setattr(self, '__link', Textbox(waitAndFind2(self.element, self.LINK)))
-            setattr(self, '__linkInitDone', True)
-        return getattr(self, '__link')
+        return createOnFirstAccess(self, "link", Textbox, self.LINK)
+        # if not hasattr(self, '__linkDone'):
+        #     setattr(self, '__link', Textbox(waitAndFind2(self.element, self.LINK)))
+        #     setattr(self, '__linkInitDone', True)
+        # return getattr(self, '__link')
 
     @property
     def submit(self):
-        if not hasattr(self, '__submitDone'):
-            setattr(self, '__submit', Button(waitAndFind2(self.element, self.SUBMIT)))
-            setattr(self, '__submitInitDone', True)
-        return getattr(self, '__submit')
+        return createOnFirstAccess(self, "submit", Button, self.SUBMIT)
+        # if not hasattr(self, '__submitDone'):
+        #     setattr(self, '__submit', Button(waitAndFind2(self.element, self.SUBMIT)))
+        #     setattr(self, '__submitInitDone', True)
+        # return getattr(self, '__submit')
 
     @property
     def imageGrabber(self):
-        if not hasattr(self, '__imageGrabberDone'):
-            setattr(self, '__imageGrabber', ImageGrabber(waitAndFind2(self.element, self.IMAGE_GRABBER)))
-            setattr(self, '__imageGrabberInitDone', True)
-        return getattr(self, '__imageGrabber')
+        return createOnFirstAccess(self, "imageGrabber", ImageGrabber, self.IMAGE_GRABBER)
+        # if not hasattr(self, '__imageGrabberDone'):
+        #     setattr(self, '__imageGrabber', ImageGrabber(waitAndFind2(self.element, self.IMAGE_GRABBER)))
+        #     setattr(self, '__imageGrabberInitDone', True)
+        # return getattr(self, '__imageGrabber')
 
     @property
     def image(self):
-        if not hasattr(self, '__imageDone') or getattr(self, '__imageDone') == False:
-            setattr(self, '__image', Image(waitAndFind2(self.element, self.IMAGE_PREVIEW)))
-            setattr(self, '__imageInitDone', True)
-        return getattr(self, '__image')
+        return createOnFirstAccess(self, "image", Image, self.IMAGE_PREVIEW)
+        # if not hasattr(self, '__imageDone') or getattr(self, '__imageDone') == False:
+        #     setattr(self, '__image', Image(waitAndFind2(self.element, self.IMAGE_PREVIEW)))
+        #     setattr(self, '__imageInitDone', True)
+        # return getattr(self, '__image')
 
 class Income(Element):
     LOW = 'input[id="income_group-9286"]'
@@ -186,31 +229,35 @@ class Income(Element):
 
     @property
     def lock(self):
-        if not hasattr(self, '__lockInitDone'):
-            setattr(self, '__lock', Groupbox(waitAndFind2(self.element, self.LOCK)))
-            setattr(self, '__lockInitDone', True)
-        return getattr(self, '__lock')
+        return createOnFirstAccess(self, "lock", Groupbox, self.LOCK)
+        # if not hasattr(self, '__lockInitDone'):
+        #     setattr(self, '__lock', Groupbox(waitAndFind2(self.element, self.LOCK)))
+        #     setattr(self, '__lockInitDone', True)
+        # return getattr(self, '__lock')
 
     @property
     def low(self):
-        if not hasattr(self, '__lowInitDone'):
-            setattr(self, '__low', Checkbox(waitAndFind2(self.element, self.LOW)))
-            setattr(self, '__lowInitDone', True)
-        return getattr(self, '__low')
+        return createOnFirstAccess(self, "low", Checkbox, self.LOW)
+        # if not hasattr(self, '__lowInitDone'):
+        #     setattr(self, '__low', Checkbox(waitAndFind2(self.element, self.LOW)))
+        #     setattr(self, '__lowInitDone', True)
+        # return getattr(self, '__low')
 
     @property
     def medium(self):
-        if not hasattr(self, '__mediumInitDone'):
-            setattr(self, '__medium', Checkbox(waitAndFind2(self.element, self.MEDIUM)))
-            setattr(self, '__mediumInitDone', True)
-        return getattr(self, '__medium')
+        return createOnFirstAccess(self, "medium", Checkbox, self.MEDIUM)
+        # if not hasattr(self, '__mediumInitDone'):
+        #     setattr(self, '__medium', Checkbox(waitAndFind2(self.element, self.MEDIUM)))
+        #     setattr(self, '__mediumInitDone', True)
+        # return getattr(self, '__medium')
 
     @property
     def high(self):
-        if not hasattr(self, '__highInitDone'):
-            setattr(self, '__high', Checkbox(waitAndFind2(self.element, self.HIGH)))
-            setattr(self, '__highInitDone', True)
-        return getattr(self, '__high')
+        return createOnFirstAccess(self, "high", Checkbox, self.HIGH)
+        # if not hasattr(self, '__highInitDone'):
+        #     setattr(self, '__high', Checkbox(waitAndFind2(self.element, self.HIGH)))
+        #     setattr(self, '__highInitDone', True)
+        # return getattr(self, '__high')
 
 class WhomBlock(Element):
 
@@ -218,10 +265,11 @@ class WhomBlock(Element):
 
     @property
     def income(self):
-        if not hasattr(self, '__incomeInitDone'):
-            setattr(self, '__income', Income(waitAndFind2(self.element, self.INCOME_GROUP)))
-            setattr(self, '__incomeInitDone', True)
-        return getattr(self, '__income')
+        return createOnFirstAccess(self, "income", Income, self.INCOME_GROUP)
+        # if not hasattr(self, '__incomeInitDone'):
+        #     setattr(self, '__income', Income(waitAndFind2(self.element, self.INCOME_GROUP)))
+        #     setattr(self, '__incomeInitDone', True)
+        # return getattr(self, '__income')
 
 class BannerPreview(Element):
     TITLE = 'span[class="banner-preview__title"]'
@@ -230,34 +278,38 @@ class BannerPreview(Element):
 
     @property
     def title(self):
-        if not hasattr(self, '__titleInitDone'):
-            setattr(self, '__title', Text(waitAndFind2(self.element, self.TITLE)))
-            setattr(self, '__titleInitDone', True)
-        return getattr(self, '__title')
+        return createOnFirstAccess(self, "title", Text, self.TITLE)
+        # if not hasattr(self, '__titleInitDone'):
+        #     setattr(self, '__title', Text(waitAndFind2(self.element, self.TITLE)))
+        #     setattr(self, '__titleInitDone', True)
+        # return getattr(self, '__title')
 
     @property
     def text(self):
-        if not hasattr(self, '__textInitDone'):
-            setattr(self, '__text', Text(waitAndFind2(self.element, self.TEXT)))
-            setattr(self, '__textInitDone', True)
-        return getattr(self, '__text')
+        return createOnFirstAccess(self, "text", Text, self.TEXT)
+        # if not hasattr(self, '__textInitDone'):
+        #     setattr(self, '__text', Text(waitAndFind2(self.element, self.TEXT)))
+        #     setattr(self, '__textInitDone', True)
+        # return getattr(self, '__text')
 
     @property
     def image(self):
-        if not hasattr(self, '__imageInitDone'):
-            setattr(self, '__image', Image(waitAndFind2(self.element, self.IMAGE)))
-            setattr(self, '__imageInitDone', True)
-        return getattr(self, '__image')
+        return createOnFirstAccess(self, "image", Image, self.IMAGE)
+        # if not hasattr(self, '__imageInitDone'):
+        #     setattr(self, '__image', Image(waitAndFind2(self.element, self.IMAGE)))
+        #     setattr(self, '__imageInitDone', True)
+        # return getattr(self, '__image')
 
 class WhenBlock(Element):
     TIME = 'li[data-name="fulltime"]'
 
     @property
     def timeBlock(self):
-        if not hasattr(self, '__timeBlockInitDone'):
-            setattr(self, '__timeBlock', TimeBlock(waitAndFind2(self.element, self.TIME)))
-            setattr(self, '__timeBlockInitDone', True)
-        return getattr(self, '__timeBlock')
+        return createOnFirstAccess(self, "timeBlock", TimeBlock, self.TIME)
+        # if not hasattr(self, '__timeBlockInitDone'):
+        #     setattr(self, '__timeBlock', TimeBlock(waitAndFind2(self.element, self.TIME)))
+        #     setattr(self, '__timeBlockInitDone', True)
+        # return getattr(self, '__timeBlock')
 
 class TimeBlock(Element):
     BUTTON_WORKTIME = 'li[data-name="workTime"]'
@@ -266,31 +318,35 @@ class TimeBlock(Element):
 
     @property
     def workTime(self):
-        if not hasattr(self, '__workTimeInitDone'):
-            setattr(self, '__workTime', Button(waitAndFind2(self.element, self.BUTTON_WORKTIME)))
-            setattr(self, '__workTimeInitDone', True)
-        return getattr(self, '__workTime')
+        return createOnFirstAccess(self, "workTime", Button, self.BUTTON_WORKTIME)
+        # if not hasattr(self, '__workTimeInitDone'):
+        #     setattr(self, '__workTime', Button(waitAndFind2(self.element, self.BUTTON_WORKTIME)))
+        #     setattr(self, '__workTimeInitDone', True)
+        # return getattr(self, '__workTime')
 
     @property
     def monday0(self):
-        if not hasattr(self, '__monday0InitDone'):
-            setattr(self, '__monday0', Groupbox(waitAndFind2(self.element, self.CHECKBOX_MONDAY_0)))
-            setattr(self, '__monday0InitDone', True)
-        return getattr(self, '__monday0')
+        return createOnFirstAccess(self, "monday0", Groupbox, self.CHECKBOX_MONDAY_0)
+        # if not hasattr(self, '__monday0InitDone'):
+        #     setattr(self, '__monday0', Groupbox(waitAndFind2(self.element, self.CHECKBOX_MONDAY_0)))
+        #     setattr(self, '__monday0InitDone', True)
+        # return getattr(self, '__monday0')
 
     @property
     def lock(self):
-        if not hasattr(self, '__lockInitDone'):
-            setattr(self, '__lock', Groupbox(waitAndFind2(self.element, self.LOCK)))
-            setattr(self, '__lockInitDone', True)
-        return getattr(self, '__lock')
+        return createOnFirstAccess(self, "lock", Groupbox, self.LOCK)
+        # if not hasattr(self, '__lockInitDone'):
+        #     setattr(self, '__lock', Groupbox(waitAndFind2(self.element, self.LOCK)))
+        #     setattr(self, '__lockInitDone', True)
+        # return getattr(self, '__lock')
 
     @property
     def text(self):
-        if not hasattr(self, '__textInitDone'):
-            setattr(self, '__text', Text(waitAndFind2(self.element, self.LOCK)))
-            setattr(self, '__textInitDone', True)
-        return getattr(self, '__text')
+        return createOnFirstAccess(self, "text", Text, self.LOCK)
+        # if not hasattr(self, '__textInitDone'):
+        #     setattr(self, '__text', Text(waitAndFind2(self.element, self.LOCK)))
+        #     setattr(self, '__textInitDone', True)
+        # return getattr(self, '__text')
 
 
 class FooterBlock(Element):
@@ -298,10 +354,11 @@ class FooterBlock(Element):
 
     @property
     def submit(self):
-        if not hasattr(self, '__submitInitDone'):
-            setattr(self, '__submit', Button(waitAndFind2(self.element, self.BUTTON)))
-            setattr(self, '__submitInitDone', True)
-        return getattr(self, '__submit')
+        return createOnFirstAccess(self, "submit", Button, self.BUTTON)
+        # if not hasattr(self, '__submitInitDone'):
+        #     setattr(self, '__submit', Button(waitAndFind2(self.element, self.BUTTON)))
+        #     setattr(self, '__submitInitDone', True)
+        # return getattr(self, '__submit')
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CompaignsList(Element):
@@ -309,11 +366,11 @@ class CompaignsList(Element):
 
     @property
     def compaign(self):
-        if not hasattr(self, '__compaignInitDone'):
-            setattr(self, '__compaign', Compaign(waitAndFind2(self.element, self.LAST_COMPAIGN)))
-            #setattr(self, '__compaign', Compaign(self.element))
-            setattr(self, '__compaignInitDone', True)
-        return getattr(self, '__compaign')
+        return createOnFirstAccess(self, "compaign", Compaign, self.LAST_COMPAIGN)
+        # if not hasattr(self, '__compaignInitDone'):
+        #     setattr(self, '__compaign', Compaign(waitAndFind2(self.element, self.LAST_COMPAIGN)))
+        #     setattr(self, '__compaignInitDone', True)
+        # return getattr(self, '__compaign')
 
 class Compaign(Element):
     COMPAIGN_NAME = 'span[class="campaign-title__name"]'
@@ -323,29 +380,33 @@ class Compaign(Element):
 
     @property
     def compaignName(self):
-        if not hasattr(self, '__compaignNameInitDone'):
-            setattr(self, '__compaignName', Text(waitAndFind2(self.element, self.COMPAIGN_NAME)))
-            setattr(self, '__compaignNameInitDone', True)
-        return getattr(self, '__compaignName')
+        return createOnFirstAccess(self, "compaignName", Text, self.COMPAIGN_NAME)
+        # if not hasattr(self, '__compaignNameInitDone'):
+        #     setattr(self, '__compaignName', Text(waitAndFind2(self.element, self.COMPAIGN_NAME)))
+        #     setattr(self, '__compaignNameInitDone', True)
+        # return getattr(self, '__compaignName')
 
 
     @property
     def text(self):
-        if not hasattr(self, '__textInitDone'):
-            setattr(self, '__text', Text(waitAndFind(self.element, self.TEXT)))
-            setattr(self, '__textInitDone', True)
-        return getattr(self, '__text')
+        return createOnFirstAccess(self, "text", Text, self.TEXT, waitAndFind)
+        # if not hasattr(self, '__textInitDone'):
+        #     setattr(self, '__text', Text(waitAndFind(self.element, self.TEXT)))
+        #     setattr(self, '__textInitDone', True)
+        # return getattr(self, '__text')
 
     @property
     def title(self):
-        if not hasattr(self, '__titleInitDone'):
-            setattr(self, '__title', Text(waitAndFind(self.element, self.TITLE)))
-            setattr(self, '__titleInitDone', True)
-        return getattr(self, '__title')
+        return createOnFirstAccess(self, "title", Text, self.TITLE, waitAndFind)
+        # if not hasattr(self, '__titleInitDone'):
+        #     setattr(self, '__title', Text(waitAndFind(self.element, self.TITLE)))
+        #     setattr(self, '__titleInitDone', True)
+        # return getattr(self, '__title')
 
     @property
     def image(self):
-        if not hasattr(self, '__imageInitDone'):
-            setattr(self, '__image', Image(waitAndFind(self.element, self.IMAGE)))
-            setattr(self, '__imageInitDone', True)
-        return getattr(self, '__image')
+        return createOnFirstAccess(self, "image", Image, self.IMAGE, waitAndFind)
+        # if not hasattr(self, '__imageInitDone'):
+        #     setattr(self, '__image', Image(waitAndFind(self.element, self.IMAGE)))
+        #     setattr(self, '__imageInitDone', True)
+        # return getattr(self, '__image')
