@@ -20,7 +20,7 @@ class Page(object):
     def open(self):
         url = urlparse.urljoin(self.BASE_URL, self.PATH)
         self.driver.get(url)
-        sleep(2)
+        #sleep(2)
 
 
 class AuthPage(Page):

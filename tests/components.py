@@ -16,14 +16,14 @@ class Component(object):
         self.driver = driver
 
 
-def waitAndFindbyClass(driver, targetName):
-    result =  WebDriverWait(driver, 30, 0.1).until(
-        lambda d: d.find_element_by_class_name(targetName)
-    )
-    for target in result:
-        if target.is_displayed():
-            return target
-    pass
+# def waitAndFindbyClass(driver, targetName):
+#     result =  WebDriverWait(driver, 30, 0.1).until(
+#         lambda d: d.find_element_by_class_name(targetName)
+#     )
+#     for target in result:
+#         if target.is_displayed():
+#             return target
+#     pass
 
 
 def waitAndFind2(driver, targetName):
@@ -33,13 +33,13 @@ def waitAndFind2(driver, targetName):
     # for target in result:
     #    print target
 
-    result =  WebDriverWait(driver, 6, 0.5).until(
+    result =  WebDriverWait(driver, 10, 0.5).until(
         lambda d: d.find_element_by_css_selector(targetName)
     )
     return result
 
 def waitAndFind(driver, targetName):
-    result =  WebDriverWait(driver, 30, 0.1).until(
+    result =  WebDriverWait(driver, 10, 0.5).until(
         lambda d: d.find_elements_by_css_selector(targetName)
     )
     for target in result:
@@ -53,15 +53,15 @@ def waitAndFindAndFillTextField(driver, targetName, text):
     result.send_keys(text)
     pass
 
-def waitAndFindAndGetChecked(driver, targetName):
-    result = waitAndFind(driver, targetName)
-    return result.is_selected()
+# def waitAndFindAndGetChecked(driver, targetName):
+#     result = waitAndFind(driver, targetName)
+#     return result.is_selected()
 
-def waitAndFindAndSetChecked(driver, targetName, state):
-    result = waitAndFind(driver, targetName)
-    if result.is_selected() != state:
-        result.click()
-    pass
+# def waitAndFindAndSetChecked(driver, targetName, state):
+#     result = waitAndFind(driver, targetName)
+#     if result.is_selected() != state:
+#         result.click()
+#     pass
 
 
 class AuthForm(Component):
