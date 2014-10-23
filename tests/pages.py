@@ -21,7 +21,6 @@ class Page(object):
     def open(self):
         url = urlparse.urljoin(self.BASE_URL, self.PATH)
         self.element.get(url)
-        #sleep(2)
 
 
 class AuthPage(Page):
@@ -46,10 +45,7 @@ class CampaignsPage(Page):
 
     @property
     def compaignsList(self):
-        if not hasattr(self, '__compaignsListInitDone'):
-            setattr(self, '__compaignsList', CompaignsList(waitAndFind2(self.element, self.COMPAIGNS)))
-            setattr(self, '__compaignsListInitDone', True)
-        return getattr(self, '__compaignsList')
+        return createOnFirstAccess(self, "compaignsList", CompaignsList, self.COMPAIGNS)
 
 
 class CreatePage(Page):
@@ -72,39 +68,19 @@ class CreatePage(Page):
     @property
     def formBlock(self):
         return createOnFirstAccess(self, "formBlock", FormBlock, self.FORM)
-        # if not hasattr(self, '__formBlockInitDone'):
-        #     setattr(self, '__formBlock', FormBlock(waitAndFind2(self.driver, self.FORM)))
-        #     setattr(self, '__formBlockInitDone', True)
-        # return getattr(self, '__formBlock')
 
     @property
     def whomBlock(self):
         return createOnFirstAccess(self, "whomBlock", WhomBlock, self.WHOM)
-        # if not hasattr(self, '__whomBlockInitDone'):
-        #     setattr(self, '__whomBlock', WhomBlock(waitAndFind2(self.driver, self.WHOM)))
-        #     setattr(self, '__whomBlockInitDone', True)
-        # return getattr(self, '__whomBlock')
 
     @property
     def bannerPreview(self):
         return createOnFirstAccess(self, "bannerPreview", BannerPreview, self.PREVIEW)
-        # if not hasattr(self, '__bannerPreviewInitDone'):
-        #     setattr(self, '__bannerPreview', BannerPreview(waitAndFind2(self.driver, self.PREVIEW)))
-        #     setattr(self, '__bannerPreviewInitDone', True)
-        # return getattr(self, '__bannerPreview')
 
     @property
     def whenBlock(self):
         return createOnFirstAccess(self, "whenBlock", WhenBlock, self.WHEN)
-        # if not hasattr(self, '__whenBlockInitDone'):
-        #     setattr(self, '__whenBlock', WhenBlock(waitAndFind2(self.driver, self.WHEN)))
-        #     setattr(self, '__whenBlockInitDone', True)
-        # return getattr(self, '__whenBlock')
 
     @property
     def footerBlock(self):
         return createOnFirstAccess(self, "footerBlock", FooterBlock, self.FOOTER)
-        # if not hasattr(self, '__footerBlockInitDone'):
-        #     setattr(self, '__footerBlock', FooterBlock(waitAndFind2(self.driver, self.FOOTER)))
-        #     setattr(self, '__footerBlockInitDone', True)
-        # return getattr(self, '__footerBlock')
