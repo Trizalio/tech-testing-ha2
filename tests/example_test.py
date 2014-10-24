@@ -34,81 +34,81 @@ class ExampleTest(unittest.TestCase):
         self.driver.quit()
         pass
 
-    # ##done
-    # def testLogin(self):
-    #     create_page = CreatePage(self.driver)
-    #     create_page.open()
+    ##done
+    def testLogin(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
 
-    #     email = create_page.top_menu.getEmail()
-    #     self.assertEqual(Vars.Login.USERNAME, email)
-    #     pass
+        email = create_page.top_menu.getEmail()
+        self.assertEqual(Vars.Login.USERNAME, email)
+        pass
 
-    # ##done
-    # def testIncome(self):
-    #     create_page = CreatePage(self.driver)
-    #     create_page.open()
+    ##done
+    def testIncome(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
 
-    #     baseStats = create_page.BaseStats
-    #     baseStats.companyProduct.setProductTypeGame()
-    #     baseStats.companyTarget.setTargetMyWorld()
-    #     baseStats.setCompanyName(Vars.BaseStats.NAME)
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
 
-    #     create_page.whomBlock.income.lock.open()
-    #     create_page.whomBlock.income.low.setChecked()
-    #     create_page.whomBlock.income.medium.setChecked()
-    #     create_page.whomBlock.income.medium.setUnchecked()
-    #     create_page.whomBlock.income.high.setChecked()
-    #     create_page.whomBlock.income.lock.close()
-    #     create_page.whomBlock.income.lock.open()
-    #     self.assertEqual(True, create_page.whomBlock.income.low.getChecked())
-    #     self.assertEqual(False, create_page.whomBlock.income.medium.getChecked())
-    #     self.assertEqual(True, create_page.whomBlock.income.high.getChecked())
-    #     pass
-
-
-    # ##done
-    # def testCreateBanner(self):
-    #     create_page = CreatePage(self.driver)
-    #     create_page.open()
+        create_page.whomBlock.income.lock.open()
+        create_page.whomBlock.income.low.setChecked()
+        create_page.whomBlock.income.medium.setChecked()
+        create_page.whomBlock.income.medium.setUnchecked()
+        create_page.whomBlock.income.high.setChecked()
+        create_page.whomBlock.income.lock.close()
+        create_page.whomBlock.income.lock.open()
+        self.assertEqual(True, create_page.whomBlock.income.low.getChecked())
+        self.assertEqual(False, create_page.whomBlock.income.medium.getChecked())
+        self.assertEqual(True, create_page.whomBlock.income.high.getChecked())
+        pass
 
 
-    #     baseStats = create_page.BaseStats
-    #     baseStats.companyProduct.setProductTypeGame()
-    #     baseStats.companyTarget.setTargetMyWorld()
-    #     baseStats.setCompanyName(Vars.BaseStats.NAME)
+    ##done
+    def testCreateBanner(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
 
-    #     create_page.formBlock.title.setText(Vars.MainStats.TITLE)
-    #     create_page.formBlock.text.setText(Vars.MainStats.TEXT)
-    #     create_page.formBlock.link.setText(Vars.MainStats.LINK)
-    #     create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
 
-    #     while create_page.formBlock.image.getImageUrl() is None:
-    #         #sleep(0.2)
-    #         create_page.formBlock.invalidate(create_page.formBlock, "image")
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
 
-    #     create_page.formBlock.submit.click()
+        create_page.formBlock.title.setText(Vars.MainStats.TITLE)
+        create_page.formBlock.text.setText(Vars.MainStats.TEXT)
+        create_page.formBlock.link.setText(Vars.MainStats.LINK)
+        create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
+
+
+        WebDriverWait(create_page.formBlock, 30, 0.5).until(checkImage)
+
+
+        create_page.formBlock.submit.click()
         
-    #     self.assertEqual(Vars.MainStats.TITLE, create_page.bannerPreview.title.getText())
-    #     self.assertEqual(Vars.MainStats.TEXT, create_page.bannerPreview.text.getText())
-    #     self.assertIsNotNone(create_page.bannerPreview.image.getImageUrl())
-    #     pass
+        self.assertEqual(Vars.MainStats.TITLE, create_page.bannerPreview.title.getText())
+        self.assertEqual(Vars.MainStats.TEXT, create_page.bannerPreview.text.getText())
+        self.assertIsNotNone(create_page.bannerPreview.image.getImageUrl())
+        pass
 
-    # ##done
-    # def testWhenTime(self):
-    #     create_page = CreatePage(self.driver)
-    #     create_page.open()
+    ##done
+    def testWhenTime(self):
+        create_page = CreatePage(self.driver)
+        create_page.open()
 
-    #     baseStats = create_page.BaseStats
-    #     baseStats.companyProduct.setProductTypeGame()
-    #     baseStats.companyTarget.setTargetMyWorld()
-    #     baseStats.setCompanyName(Vars.BaseStats.NAME)
+        baseStats = create_page.BaseStats
+        baseStats.companyProduct.setProductTypeGame()
+        baseStats.companyTarget.setTargetMyWorld()
+        baseStats.setCompanyName(Vars.BaseStats.NAME)
 
-    #     create_page.whenBlock.timeBlock.lock.open()
-    #     create_page.whenBlock.timeBlock.workTime.click()
-    #     self.assertEqual(Vars.Time.WORK_TIME, create_page.whenBlock.timeBlock.text.getText())
-    #     create_page.whenBlock.timeBlock.monday0.open()
-    #     self.assertEqual(Vars.Time.HOURS_56, create_page.whenBlock.timeBlock.text.getText())
-    #     pass
+        create_page.whenBlock.timeBlock.lock.open()
+        create_page.whenBlock.timeBlock.workTime.click()
+        self.assertEqual(Vars.Time.WORK_TIME, create_page.whenBlock.timeBlock.text.getText())
+        create_page.whenBlock.timeBlock.monday0.open()
+        self.assertEqual(Vars.Time.HOURS_56, create_page.whenBlock.timeBlock.text.getText())
+        pass
 
     ##done
     def testCreateCompany(self):
