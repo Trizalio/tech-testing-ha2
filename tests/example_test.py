@@ -83,7 +83,7 @@ class ExampleTest(unittest.TestCase):
         create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
 
         while create_page.formBlock.image.getImageUrl() is None:
-            sleep(0.2)
+            #sleep(0.2)
             create_page.formBlock.invalidate(create_page.formBlock, "image")
 
         create_page.formBlock.submit.click()
@@ -125,10 +125,14 @@ class ExampleTest(unittest.TestCase):
         create_page.formBlock.link.setText(Vars.MainStats.LINK)
         create_page.formBlock.imageGrabber.setImage(Vars.MainStats.IMAGE)
 
-        sleep(2)
+        while create_page.formBlock.image.getImageUrl() is None:
+            #sleep(0.2)
+            create_page.formBlock.invalidate(create_page.formBlock, "image")
         create_page.formBlock.submit.click()
 
-        sleep(2)
+        while create_page.bannerPreview.image.getImageUrl() is None:
+            #sleep(0.2)
+            create_page.formBlock.invalidate(create_page.formBlock, "image")
         create_page.footerBlock.submit.click()
 
         compaign_page = CampaignsPage(self.driver)
