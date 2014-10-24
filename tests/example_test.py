@@ -112,7 +112,6 @@ class ExampleTest(unittest.TestCase):
 
     ##done
     def testCreateCompany(self):
-        print dir(WebDriverWait)
 
         create_page = CreatePage(self.driver)
         create_page.open()

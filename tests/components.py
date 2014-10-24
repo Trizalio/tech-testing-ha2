@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.select import Select
 from tests.atoms import Element, ImageGrabber, Image, Button, Text, Textbox, Radiobutton, Groupbox, Checkbox
 
-DEBUG = False
+DEBUG = True
 
 class Component(object):
     def __init__(self, driver):
