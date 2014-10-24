@@ -18,15 +18,6 @@ class Component(object):
         self.driver = driver
 
 
-# def waitAndFindbyClass(driver, targetName):
-#     result =  WebDriverWait(driver, 30, 0.1).until(
-#         lambda d: d.find_element_by_class_name(targetName)
-#     )
-#     for target in result:
-#         if target.is_displayed():
-#             return target
-#     pass
-
 
 def waitAndFind2(driver, targetName):
     debug ("looking for " + targetName)
