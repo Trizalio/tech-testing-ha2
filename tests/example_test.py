@@ -84,8 +84,6 @@ class ExampleTest(unittest.TestCase):
 
 
         WebDriverWait(create_page.formBlock, 30, 0.5).until(checkImage)
-
-
         create_page.formBlock.submit.click()
         
         self.assertEqual(Vars.MainStats.TITLE, create_page.bannerPreview.title.getText())
@@ -142,10 +140,11 @@ class ExampleTest(unittest.TestCase):
 
 def checkImage(x):
     debug("checkImage")
-    if x.image.getImageUrl() is None:
+    url = x.image.getImageUrl()
+    if url is None or url == 'none':
         debug("fail")
         x.invalidate(x, "image")
         return False
     else:
-        debug("found")
+        debug("found " + x.image.getImageUrl())
         return True

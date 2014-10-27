@@ -211,6 +211,7 @@ class BannerPreview(Element):
     TITLE = 'span[class="banner-preview__title"]'
     TEXT = 'p[class="banner-preview__text"]'
     IMAGE = 'div[class="js-image-img"] span[class="banner-preview__img"]'
+    #IMAGE = 'span[class="banner-preview__img"]'
 
     @property
     def title(self):
